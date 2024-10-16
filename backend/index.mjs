@@ -16,7 +16,7 @@ app.use(cors());
 app.use(express.json());
 
 
-connectMongoDB('mongodb://localhost:27017/url-shortner')
+connectMongoDB(`mongodb+srv://satyam9242:${process.env.PASSWORD}@cluster0.cindy.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`)
 .then(() => console.log("DB connected"))
 .catch((error) => console.log(error))
 
