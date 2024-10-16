@@ -30,10 +30,11 @@ export const generateShortURL = async function generateShortURL(req, res) {
         try {
             // res.sendStatus(200).json({ id: checkInDB.shortId });
             res.send({ id: checkInDB.shortId });
+            return;
         } catch (err) {
             console.log(err);
+            return res.sendStatus(404);
         }
-        return;
     }
     const shortId = nanoid(5);
 
@@ -47,12 +48,20 @@ export const generateShortURL = async function generateShortURL(req, res) {
 }
 
 export const redirectShortURL = async function redirectShortURL(req, res) {
-    const shortId = req.params.shortId;
+    let shortId;
+    try{
+        shortId = req.params.shortId;
+    }catch(err){
+        console.log(err);
+        return res.sendStatus(404);
+    }
 
     const matchedURL = await URL.findOne({shortId});
     if (matchedURL) {
         res.redirect(matchedURL.redirectURL);
+        return;
     }else{
         return res.status(404).json({error: "not found"});
     }
+    return;
 }
