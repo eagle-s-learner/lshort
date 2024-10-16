@@ -1,18 +1,18 @@
-import  {nanoid}  from "nanoid";
+import { nanoid } from "nanoid";
 import URL from "../models/url.mjs";
 
 function isValidHttpUrl(str) {
     const pattern = new RegExp(
-      '^(https?:\\/\\/)?' + // protocol
-        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-        '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-        '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-        '(\\#[-a-z\\d_]*)?$', // fragment locator
-      'i'
+        "^(https?:\\/\\/)?" + // protocol
+            "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+            "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+            "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+            "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+            "(\\#[-a-z\\d_]*)?$", // fragment locator
+        "i"
     );
     return pattern.test(str);
-  }
+}
 
 export const generateShortURL = async function generateShortURL(req, res) {
     const body = req.body;
@@ -20,9 +20,9 @@ export const generateShortURL = async function generateShortURL(req, res) {
     if (!body.url) {
         return res.sendStatus(400).json({ error: "url is Required!" });
     }
-    if(!isValidHttpUrl(body.url)){
+    if (!isValidHttpUrl(body.url)) {
         // console.log("appple")
-        return res.json({error: "Require full valid URL"});
+        return res.json({ error: "Require full valid URL" });
     }
 
     const checkInDB = await URL.findOne({ redirectURL: body.url });
@@ -45,23 +45,32 @@ export const generateShortURL = async function generateShortURL(req, res) {
     });
 
     res.send({ id: shortId });
-}
+};
 
 export const redirectShortURL = async function redirectShortURL(req, res) {
     let shortId;
-    try{
+    try {
         shortId = req.params.shortId;
-    }catch(err){
+    } catch (err) {
         console.log(err);
         return res.sendStatus(404);
     }
 
-    const matchedURL = await URL.findOne({shortId});
+    const matchedURL = await URL.findOneAndUpdate(
+        { shortId },
+        {
+            $push: {
+                vistHistory: {
+                    timestamps: Date.now(),
+                },
+            },
+        }
+    );
     if (matchedURL) {
         res.redirect(matchedURL.redirectURL);
         return;
-    }else{
-        return res.status(404).json({error: "not found"});
+    } else {
+        return res.status(404).json({ error: "not found" });
     }
     return;
-}
+};
