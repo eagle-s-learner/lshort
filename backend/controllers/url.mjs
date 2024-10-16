@@ -51,7 +51,8 @@ export const redirectShortURL = async function redirectShortURL(req, res) {
 
     const matchedURL = await URL.findOne({shortId});
     if (matchedURL) {
-        console.log('hey');
         res.redirect(matchedURL.redirectURL);
+    }else{
+        return res.status(404).json({error: "not found"});
     }
 }
