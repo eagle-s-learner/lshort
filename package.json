@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "nodemon backend/index.mjs",
     "build": "npm install && npm install --prefix frontend npm run build --prefix frontend",
-    "start": "nodemon backend/index.mjs"
+    "start": "node backend/index.mjs"
   },
   "author": "",
   "license": "ISC",
