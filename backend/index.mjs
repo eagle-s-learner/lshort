@@ -31,7 +31,7 @@ app.use("/api", urlRoute);
 app.use(express.static(path.join(_dirname, "/frontend/dist")));
 app.get("*", (req, res) => {
     try {
-        const filePath = path.join(_dirname, "frontend", "dist", "index.html");
+        const filePath = path.join(_dirname, "../frontend/dist", "index.html");
         res.sendFile(filePath, (err) => {
             if (err) {
                 console.log(err);
