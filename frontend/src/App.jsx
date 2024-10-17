@@ -16,7 +16,7 @@ export default function App() {
             return;
         }
         try {
-            const response = await fetch("http://localhost:8002/api/", {
+            const response = await fetch("https://lshort.onrender.com/api/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -30,7 +30,7 @@ export default function App() {
             }
             // console.log(result.error);
             // console.log(result);
-            setNewLink("http://localhost:8002/api" + "/" + result.id);
+            setNewLink("https://lshort.onrender.com/api" + "/" + result.id);
         } catch (err) {
             setError(() => {
                 return { error: err.message, visble: true };
